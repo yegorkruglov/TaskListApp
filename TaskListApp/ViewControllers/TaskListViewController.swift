@@ -25,8 +25,6 @@ final class TaskListViewController: UITableViewController {
         fetchTaskList()
     }
     
- 
-
     @objc private func addNewTask() {
         showAlert(withTitle: "New Task", andMessage: "What would you like to do?", sender: UIBarButtonItem.self)
     }
@@ -99,6 +97,26 @@ extension TaskListViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        guard let oldValue = taskList[indexPath.row].value(forKey: "title") as? String else { return }
+        
+        let alertController = UIAlertController(title: "Edit note", message: nil, preferredStyle: .alert)
+        
+        alertController.addTextField()
+        alertController.textFields?.first?.text = oldValue
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned self] _ in
+            let newValue = alertController.textFields?.first?.text ?? "Error happend"
+            
+            storageManager.edit(oldValue: oldValue, newValue: newValue)
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+        
+        present(alertController, animated: true)
         
         
     }

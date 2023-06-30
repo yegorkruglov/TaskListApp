@@ -64,6 +64,24 @@ final class StorageManager {
         }
     }
     
+    func edit(oldValue: String, newValue: String) {
+        let viewContext = persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
+        fetchRequest.predicate = NSPredicate(format: "title = %@", oldValue)
+        
+        let results = try? viewContext.fetch(fetchRequest) as? [NSManagedObject]
+        
+        results?.first?.setValue(newValue, forKey: "title")
+        
+        do {
+            try viewContext.save()
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        
+    }
+    
     func delete(task: Task) {
         let viewContext = persistentContainer.viewContext
         
