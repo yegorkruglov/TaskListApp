@@ -23,6 +23,8 @@ final class StorageManager {
         return container
     }()
     
+    lazy var viewContext = persistentContainer.viewContext
+    
     func saveContext () {
         let context = persistentContainer.viewContext
         if context.hasChanges {
@@ -36,8 +38,6 @@ final class StorageManager {
     }
     
     func fetchData(completion: ([Task]) -> Void) {
-        let viewContext = persistentContainer.viewContext
-        
         let fetchRequest = Task.fetchRequest()
         
         do {
@@ -49,8 +49,6 @@ final class StorageManager {
     }
     
     func save(_ taskName: String, completion: (Task) -> Void) {
-        let viewContext = persistentContainer.viewContext
-        
         let task = Task(context: viewContext)
         task.title = taskName
         
@@ -65,8 +63,6 @@ final class StorageManager {
     }
     
     func edit(oldValue: String, newValue: String) {
-        let viewContext = persistentContainer.viewContext
-        
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
         fetchRequest.predicate = NSPredicate(format: "title = %@", oldValue)
         
@@ -83,8 +79,6 @@ final class StorageManager {
     }
     
     func delete(task: Task) {
-        let viewContext = persistentContainer.viewContext
-        
         viewContext.delete(task)
         
         do {

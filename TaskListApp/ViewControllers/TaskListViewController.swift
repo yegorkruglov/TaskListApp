@@ -26,7 +26,7 @@ final class TaskListViewController: UITableViewController {
     }
     
     @objc private func addNewTask() {
-        showAlert(withTitle: "New Task", andMessage: "What would you like to do?", sender: UIBarButtonItem.self)
+        showAlert(withTitle: "New Task", andMessage: "What would you like to do?")
     }
     
     private func fetchTaskList() {
@@ -35,7 +35,7 @@ final class TaskListViewController: UITableViewController {
         }
     }
     
-    private func showAlert(withTitle title: String, andMessage message: String, sender: Any?) {
+    private func showAlert(withTitle title: String, andMessage message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         let saveAction = UIAlertAction(title: "Save Task", style: .default) { [unowned self] _ in
