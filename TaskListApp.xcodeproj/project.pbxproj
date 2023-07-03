@@ -63,9 +63,17 @@
 				5DE8401E2A4EC70300C43627 /* ViewControllers */,
 				5DE8401F2A4EC71300C43627 /* Resources */,
 				5DE840202A4EC72600C43627 /* Storyboards */,
-				519467F42A4DF1AF00060568 /* TaskListApp.xcdatamodeld */,
+				5D545F932A51E54300CCE972 /* Models */,
 			);
 			path = TaskListApp;
+			sourceTree = "<group>";
+		};
+		5D545F932A51E54300CCE972 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				519467F42A4DF1AF00060568 /* TaskListApp.xcdatamodeld */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		5DE8401D2A4EC6FC00C43627 /* App */ = {

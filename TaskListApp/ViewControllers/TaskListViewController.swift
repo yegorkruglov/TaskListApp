@@ -36,10 +36,16 @@ final class TaskListViewController: UITableViewController {
     }
     
     private func showAlert(withTitle title: String, andMessage message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
+        alertController.addTextField()
+        alertController.addTextField { textField in
+            textField.placeholder = "New Task"
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
         let saveAction = UIAlertAction(title: "Save Task", style: .default) { [unowned self] _ in
-            guard let taskName = alert.textFields?.first?.text, !taskName.isEmpty else { return }
+            guard let taskName = alertController.textFields?.first?.text, !taskName.isEmpty else { return }
             
             storageManager.save(taskName) { task in
                 taskList.append(task)
@@ -48,21 +54,13 @@ final class TaskListViewController: UITableViewController {
                     at: [IndexPath(row: taskList.count - 1, section: 0)],
                     with: .automatic
                 )
-                
-                dismiss(animated: true)
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
+        alertController.addAction(saveAction)
+        alertController.addAction(cancelAction)
         
-        alert.addAction(saveAction)
-        alert.addAction(cancelAction)
-        
-        alert.addTextField { textField in
-            textField.placeholder = "New Task"
-        }
-        
-        present(alert, animated: true)
+        present(alertController, animated: true)
     }
 
 }
@@ -97,28 +95,29 @@ extension TaskListViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let oldValue = taskList[indexPath.row].value(forKey: "title") as? String else { return }
+        let task = taskList[indexPath.row]
         
         let alertController = UIAlertController(title: "Edit note", message: nil, preferredStyle: .alert)
         
         alertController.addTextField()
-        alertController.textFields?.first?.text = oldValue
+        alertController.textFields?.first?.text = task.title
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned self] _ in
-            let newValue = alertController.textFields?.first?.text ?? "Error happend"
+        let editAction = UIAlertAction(title: "Save", style: .default) { [unowned self] _ in
+            guard let newValue = alertController.textFields?.first?.text else { return }
             
-            storageManager.edit(oldValue: oldValue, newValue: newValue)
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+            storageManager.edit(task: task, newValue: newValue)
+            
+            tableView.reloadRows(
+                at: [indexPath],
+                with: .automatic)
             
         }
         
         alertController.addAction(cancelAction)
-        alertController.addAction(saveAction)
+        alertController.addAction(editAction)
         
         present(alertController, animated: true)
-        
-        
     }
 }
 
